@@ -134,6 +134,14 @@ class Vector:
             for i in range(len(self)):
                 self.arguments[i] += add_amount[i]
             return vector
+        
+    @classmethod
+    def arange(cls, numbers):
+        assert numbers.__class__.__name__ is "int"
+        arguments = []
+        for i in range(numbers):
+            arguments.append(i)
+        return cls(arguments)
     
     @classmethod
     def cross_product(cls, vector1, vector2):
@@ -157,6 +165,33 @@ class Matrix:
                 Exception("All vectors constituting a matrix must have the same length.")
         self.vectors = vectors
         
+class Heap:
+    def __init__(self, elements):
+        self.elements = elements
+        self.heap_sort()
+    
+    def heap_sort(self): #Sorts the heap's elements from smallest to largest.
+        length = len(self.elements) - 1
+        least_parent = length // 2
+        for i in range(least_parent, -1, -1):
+            self.move_down(i, length)
+            
+        for i in range(length, 0, -1):
+            if self.elements[0] > self.elements[i]:
+                self.elements[0], self.elements[i] = self.elements[i], self.elements[0]
+                self.move_down(0, i-1)
+            
+    def move_down(self, first, last):
+        largest = 2 * first + 1
+        while largest <= last:
+            if largest < last and self.elements[largest] < self.elements[largest + 1]: #Determine between left node and right node.
+                largest += 1
+            if self.elements[largest] > self.elements[first]:
+                self.elements[largest], self.elements[first] = self.elements[first], self.elements[largest]
+                first = largest
+                largest = first * 2 + 1
+            else:
+                return
 
 def boolean_flip(boolean):
     if boolean is True:
@@ -190,3 +225,13 @@ def time_it(function, num_times):
     end = time.time()
     return end - start
 
+def distance(pos1, pos2):
+    distance = 0
+    assert len(pos1) == len(pos2)
+    for i in range(len(pos1)):
+        distance += (pos1[i] - pos2[i])**2
+    distance **= 0.5
+    return distance
+
+def num_identical(a, b): #Returns the number of identical elements between two lists.
+    return len(set(a).intersection(set(b)))
